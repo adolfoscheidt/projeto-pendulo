@@ -294,26 +294,43 @@ staticImg(0);
 
 // Função que movimenta o pêndulo
 function animate() {
-	
+    
 	// função que ajusta o tempo de acordo com o tempo real (em milissegundos!)
 	var agora = new Date();
     t = t0 + (agora.getTime() - inicio.getTime());
 
 	staticImg(t);
 
-	 document.getElementById("clock").innerHTML = (t/1000).toPrecision(4); // Atualiza o tempo do cronômetro
+    document.getElementById("clock").innerHTML = (t/1000).toPrecision(4); // Atualiza o tempo do cronômetro
+	 
  }
  
  // Função que "solta os pêndulos"
  function activate() {	
+ 
+ hora = document.getElementById("clock").innerHTML;
+ 
+ if (hora==0.000 || hora==pausa){
+ 
  inicio = new Date();
  tictac = setInterval("animate()",50);
+ 
+ }
+ 
 }
 
 // Função que para os pêndulos
 function desactivate() {
+
+    pausa = document.getElementById("clock").innerHTML;
+    
+    if (pausa!=0.000){
+    
 	clearInterval(tictac);
 	t0 = t;
+	
+	}
+	
 }
 
 //Função que reseta os pêndulos
