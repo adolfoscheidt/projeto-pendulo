@@ -9,3 +9,5 @@ Para rodar a simulação, você pode clicar no link abaixo:
 https://pendulo-de-ondas.netlify.app/
 
 OU se preferir, você pode baixar o arquivo index.html e abri-lo com um navegador de internet de sua preferência (chrome, firefox, etc). 
+
+OBS: a simulação foi feita para ser vista em computadores, portanto em dispositivos móveis pode apresentar problemas no layout/estrutura da página.
