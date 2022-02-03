@@ -90,61 +90,51 @@
 
 	</div> 
 
-			<div id="left" style="height:600px"> <!-- div da esquerda -->
+	<div id="left" style="height:600px"> <!-- div da esquerda -->
+	
+		<h1 style="position:relative; text-align:center"><u>Pêndulo de Ondas</u></h1>
+
+		<p style="font-size:20px; position:relative; left:15px; text-align:center">O pêndulo de ondas consiste em um arranjo de pêndulos com pequenas variações em seus comprimentos, fazendo com que eles "dancem" ao longo do tempo de acordo com suas respectivas oscilações.
+
+		<br>
+		<br>
+
+		Uma visualização do fênomeno em vídeo está disponível <a href="https://www.youtube.com/watch?v=yVkdfJ9PkRQ">aqui</a>. Este programa retrata o mesmo sistema visto "de cima".
+
+		<br>
+		<br>
+		Nas configurações à direita, você pode controlar o número de pêndulos, o comprimento do pêndulo mais longo e outros fatores que serão explicados mais detalhadamente abaixo.
 			
-			<h1 style="position:relative; text-align:center"><u>Pêndulo de Ondas</u></h1>
+		</p>
 
-			<p style="font-size:20px; position:relative; left:15px; text-align:center">O pêndulo de ondas consiste em um arranjo de pêndulos com pequenas variações em seus comprimentos, fazendo com que eles "dancem" ao longo do tempo de acordo com suas respectivas oscilações.
+	</div>
+	<!-- div do centro (canvas) -->
+	<div id="center"><canvas id="cnv" width="400" height="600" style="border:1px solid black"></canvas>
 
-			<br>
-			<br>
-
-			Uma visualização do fênomeno em vídeo está disponível <a href="https://www.youtube.com/watch?v=yVkdfJ9PkRQ">aqui</a>. Este programa retrata o mesmo sistema visto "de cima".
-
-			<br>
-			<br>
-			Nas configurações à direita, você pode controlar o número de pêndulos, o comprimento do pêndulo mais longo e outros fatores que serão explicados mais detalhadamente abaixo.
-			 
-			</p>
-
-			</div>
-					<!-- div do centro (canvas) -->
-					<div id="center"><canvas id="cnv" width="400" height="600" style="border:1px solid black"></canvas>
-
-					</div>
+	</div>
 
 </div>
 
 <div>
 	
-<h2>Tabela</h2>
+	<h2>Tabela</h2>
 
-<p>Abaixo é apresentada uma tabela com os valores de cada grandeza de acordo com o comprimento do primeiro pêndulo escolhido:</p>
+	<p>Abaixo é apresentada uma tabela com os valores de cada grandeza de acordo com o comprimento do primeiro pêndulo escolhido:</p>
 
-<div id="tabela" align="center"></div>
+	<div id="tabela" align="center"></div>
 
-<h2>Informações</h2>
+	<h2>Informações</h2>
 
-<p>Como podemos construir o pêndulo de ondas? A resposta pode ser encontrada na tabela!</p>
+	<p>Como podemos construir o pêndulo de ondas? A resposta pode ser encontrada na tabela!</p>
 
-<p>Perceba que a coluna <i>"número de oscilações"</i> nos mostra quantas oscilações cada pêndulo faz em um determinado tempo de referência que pode ser escolhido nos controles (por exemplo, 60 segundos). Este é o segredo para a construção do sistema: se o pêndulo mais longo oscilar <i>J</i> vezes em um certo tempo <i>T</i>, o pêndulo seguinte deverá executar <i>J+1</i> oscilações no mesmo intervalo de tempo <i>T</i>, e assim por diante. Dessa forma, todos os pêndulos são encurtados a partir do comprimento escolhido para o pêndulo mais longo.</p>
+	<p>Perceba que a coluna <i>"número de oscilações"</i> nos mostra quantas oscilações cada pêndulo faz em um determinado tempo de referência que pode ser escolhido nos controles (por exemplo, 60 segundos). Este é o segredo para a construção do sistema: se o pêndulo mais longo oscilar <i>J</i> vezes em um certo tempo <i>T</i>, o pêndulo seguinte deverá executar <i>J+1</i> oscilações no mesmo intervalo de tempo <i>T</i>, e assim por diante. Dessa forma, todos os pêndulos são encurtados a partir do comprimento escolhido para o pêndulo mais longo.</p>
 
-<p>Algo interessante para se notar é que a maneira como o sistema é construído cria um arranjo pendular em que após o tempo <i>T</i> ter passado, todos os pêndulos estarão <b>em fase</b> novamente! Por exemplo, se o tempo <i>T</i> for de 60 segundos, em 0 segundos o sistema é solto, em 30 segundos os pêndulos estão em <b>fase oposta</b> e em 60 segundos o movimento se repete.</p>
+	<p>Algo interessante para se notar é que a maneira como o sistema é construído cria um arranjo pendular em que após o tempo <i>T</i> ter passado, todos os pêndulos estarão <b>em fase</b> novamente! Por exemplo, se o tempo <i>T</i> for de 60 segundos, em 0 segundos o sistema é solto, em 30 segundos os pêndulos estão em <b>fase oposta</b> e em 60 segundos o movimento se repete.</p>
 
-<p>A maior parte destas informações foram retiradas desse <a href="http://sbfisica.org.br/rbef/pdf/364309.pdf">artigo</a> muito interessante que apresenta também um estudo mais aprofundado sobre o pêndulo de ondas.</p>
+	<p>A maior parte destas informações foram retiradas desse <a href="http://sbfisica.org.br/rbef/pdf/364309.pdf">artigo</a> muito interessante que apresenta também um estudo mais aprofundado sobre o pêndulo de ondas.</p>
 
-<p><i>Feito por Adolfo Scheidt</i></p>
-<p><i>Professor: Nelson Canzian da Silva</i></p>
-<!--
-
-todo
-
-<p>Para entendermos o que os controles representam, vamos dar uma olhada neste esquema que ilustra o pêndulo visto de um ponto de vista diferente do mostrado em nosso programa:</p>
-
-<p><b>(colocar a imagem aqui)</b></p>
-
-<p>Perceba que o fio possui um ângulo inicial &#952; em relação à vertical. Este ângulo pode ser escolhido na janela de controles. O motivo de estar entre 0° e 20° é que para estes valores a oscilação dos pêndulos pode ser descrita como sendo uma <b>oscilação harmônica</b>.</p>
--->
+	<p><i>Feito por Adolfo Scheidt</i></p>
+	<p><i>Professor: Nelson Canzian da Silva</i></p>
 
 </div>
 
@@ -193,30 +183,30 @@ function updateData() {
 	  	document.getElementById("txtTimeRef").value = 60;
 	  	timeRef = 60;
 	}	
-  t0 = 0;
+  	t0 = 0;
 
-thetaInDeg = document.getElementById("angulo").value; // Valor do ângulo inicial em graus (corresponde ao ângulo feito pelo fio com a vertical). Para manter a oscilação harmônica, considerar valores inferiores a 20°;
-document.getElementById("anguloValor").innerHTML = thetaInDeg; // Atualiza o valor escolhido pelo usuário e substitui
+	thetaInDeg = document.getElementById("angulo").value; // Valor do ângulo inicial em graus (corresponde ao ângulo feito pelo fio com a vertical). Para manter a oscilação harmônica, considerar valores inferiores a 20°;
+	document.getElementById("anguloValor").innerHTML = thetaInDeg; // Atualiza o valor escolhido pelo usuário e substitui
 
-  thetaIn = thetaInDeg * Math.PI/180; // Ângulo inicial em radianos
+  	thetaIn = thetaInDeg * Math.PI/180; // Ângulo inicial em radianos
 
-// VARIÁVEIS DO PROGRAMA //
+	// VARIÁVEIS DO PROGRAMA //
 
-  numOsc0 = timeRef / T0; // Número de oscilações do pêndulo mais longo (com base no tempo de referência)
+	numOsc0 = timeRef / T0; // Número de oscilações do pêndulo mais longo (com base no tempo de referência)
 
-  numOsc = []; // Inicia a matriz com o número de oscilações de cada pêndulo
+	numOsc = []; // Inicia a matriz com o número de oscilações de cada pêndulo
 
-  T = [T0]; // Inicia a matriz com os períodos de cada pêndulo
- 
-  L = []; // Inicia a matriz com os comprimentos de cada pêndulo
+	T = [T0]; // Inicia a matriz com os períodos de cada pêndulo
+	
+	L = []; // Inicia a matriz com os comprimentos de cada pêndulo
 
-  omega = []; // Inicia a matriz com os valores de omega (frequência angular) de cada pêndulo
+	omega = []; // Inicia a matriz com os valores de omega (frequência angular) de cada pêndulo
 
-  amplitudeMax = []; // Inicia a matriz com o deslocamento máximo horizontal de cada pêndulo (depende diretamente do ângulo inicial)
+	amplitudeMax = []; // Inicia a matriz com o deslocamento máximo horizontal de cada pêndulo (depende diretamente do ângulo inicial)
 
-  x = []; // Inicia a Matriz com as posições em função do tempo para cada pêndulo
+	x = []; // Inicia a Matriz com as posições em função do tempo para cada pêndulo
 
-  y = []; // Inicia a Matriz com as posições em y de cada pêndulo (ao longo do canvas).
+	y = []; // Inicia a Matriz com as posições em y de cada pêndulo (ao longo do canvas).
  
 		// Comando para definir as grandezas (período, frequencia angular, etc) respectivos de cada pêndulo
 	for (var i=0;i<numPend;i++) {
@@ -233,27 +223,25 @@ document.getElementById("anguloValor").innerHTML = thetaInDeg; // Atualiza o val
 	 	omega[i] = Math.sqrt(g/L[i]);	// Monta a matriz com a frequência angular de cada pêndulo
 	}
 
-var str = "";
-str += '<table id="myTable" border="2" cellpadding="5" cellspacing="">';
-str += "<tr style='background-color:lightgrey'>";
-str += '<th>Pêndulo</th>';
-str += '<th>Comprimento do fio</th>';
-str += '<th>Período</th>';
-str += '<th>Numero de Oscilações (de acordo com o tempo de referência)</th>';
-str += '</tr>';
-for (var i=0;i<numPend;i++) {
-	str += "<tr>";
-	str += "<td align='center';>" + (i+1) + "</td>";
-	str += "<td align='center';>" + L[i].toPrecision(3) + "&nbsp; m" + "</td>";
-	str += "<td align='center';>" + T[i].toPrecision(4) + "&nbsp; s" + "</td>";
-	str += "<td align='center';>" + numOsc[i].toPrecision(5) + "</td>";
-	str += "</tr>";
+	var str = "";
+	str += '<table id="myTable" border="2" cellpadding="5" cellspacing="">';
+	str += "<tr style='background-color:lightgrey'>";
+	str += '<th>Pêndulo</th>';
+	str += '<th>Comprimento do fio</th>';
+	str += '<th>Período</th>';
+	str += '<th>Numero de Oscilações (de acordo com o tempo de referência)</th>';
+	str += '</tr>';
+	for (var i=0;i<numPend;i++) {
+		str += "<tr>";
+		str += "<td align='center';>" + (i+1) + "</td>";
+		str += "<td align='center';>" + L[i].toPrecision(3) + "&nbsp; m" + "</td>";
+		str += "<td align='center';>" + T[i].toPrecision(4) + "&nbsp; s" + "</td>";
+		str += "<td align='center';>" + numOsc[i].toPrecision(5) + "</td>";
+		str += "</tr>";
 
-}
-str += '</table>';
-document.getElementById('tabela').innerHTML = str;
-
-
+	}
+	str += '</table>';
+	document.getElementById('tabela').innerHTML = str;
 }
 // Para executar a função já no início do programa:
 updateData();
@@ -303,34 +291,24 @@ function animate() {
 
     document.getElementById("clock").innerHTML = (t/1000).toPrecision(4); // Atualiza o tempo do cronômetro
 	 
- }
+}
  
- // Função que "solta os pêndulos"
- function activate() {	
- 
- hora = document.getElementById("clock").innerHTML;
- 
- if (hora==0.000 || hora==pausa){
- 
- inicio = new Date();
- tictac = setInterval("animate()",50);
- 
- }
- 
+// Função que "solta os pêndulos"
+function activate() {	
+	hora = document.getElementById("clock").innerHTML;
+	if (hora==0.000 || hora==pausa){
+	inicio = new Date();
+	tictac = setInterval("animate()",50);
+	}
 }
 
 // Função que para os pêndulos
 function desactivate() {
-
     pausa = document.getElementById("clock").innerHTML;
-    
     if (pausa!=0.000){
-    
 	clearInterval(tictac);
 	t0 = t;
-	
 	}
-	
 }
 
 //Função que reseta os pêndulos
