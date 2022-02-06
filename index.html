@@ -1,327 +1,409 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Pêndulo de Ondas</title>
-	<meta charset = "UTF-8">
-</head>
-
-<body id="myBody">
-
-<!-- CSS para ajustar os divs do layout da página -->
-<style type="text/css">
-	
-#container{width: 100%}
-#right{float:right; width: 400px}
-#left{float:left; width: 400px} 
-#center{margin:0 auto; width: 400px}
-
-</style>
-
-<!-- div que abrange a tela inteira --> 
-<div id="container" style="clear:both">
-
-	<div id="right" style="height:600px"> <!-- div da direita -->
-
-		<div style="position:relative; text-align:center">
-
-		<h2>Controles</h2>
-
-		<p>Valor do ângulo inicial (máximo 20 graus):</p>
-
-		0<input type="range" id="angulo" value="20" min="0" max="20" onInput="updateData(); staticImg(0)">20
-		
-		<br>
-
-		<p>Ângulo: 
-		<span id="anguloValor">20</span>&deg;
-		</p>
-
-		<p>Valor do comprimento do pêndulo mais longo: 
-
-		<input type="text" id="initLength" style="width:30px" value="0.5"> m
-
-		<br>
-
-		(Máximo: 0.5 metros) &nbsp;
-
-		<input type="button" value="OK" id="lengthBtn" onclick="updateData(); staticImg(0)">
-
-		</p>			
-
-		<p>Escolha o número de pêndulos:
-
-		<input type="text" id="numPendTxt" style="width:30px" value="15">
-		
-		<br>
-
-		(Máximo: 15) &nbsp;
-
-		<input type="button" value="OK" onclick="updateData(); staticImg(0)">	
-
-		</p>
-
-		<p>Escolha aqui um tempo de referência:
-
-		<input type="text" id="txtTimeRef" style="width:30px" value="60"> s
-
-		<br>
-
-		(Valor mínimo: 0 s) &nbsp;
-
-		<input type="button" value="OK" id="timeRefBtn" onclick="updateData(); staticImg(0)">
-
-		</p>			
-
-		<p>	Cronômetro: <span id="clock">0.000</span> s </p>
-	
-		<input type="button" value="Soltar os pêndulos!" onclick="activate()" style="background-color:lightblue">
-
-		<br>
-		<br>
-
-		<input type="button" value="Parar os pêndulos!" onclick="desactivate()" style="background-color:rgb(255,150,150)">
-
-		<br>
-		<br>
-
-		<input type="button" value="Reiniciar" onclick="reset(); staticImg(0)" style="background-color:rgb(250,250,0)">
-
-		</div>
-
-	</div> 
-
-	<div id="left" style="height:600px"> <!-- div da esquerda -->
-	
-		<h1 style="position:relative; text-align:center"><u>Pêndulo de Ondas</u></h1>
-
-		<p style="font-size:20px; position:relative; left:15px; text-align:center">O pêndulo de ondas consiste em um arranjo de pêndulos com pequenas variações em seus comprimentos, fazendo com que eles "dancem" ao longo do tempo de acordo com suas respectivas oscilações.
-
-		<br>
-		<br>
-
-		Uma visualização do fênomeno em vídeo está disponível <a href="https://www.youtube.com/watch?v=yVkdfJ9PkRQ">aqui</a>. Este programa retrata o mesmo sistema visto "de cima".
-
-		<br>
-		<br>
-		Nas configurações à direita, você pode controlar o número de pêndulos, o comprimento do pêndulo mais longo e outros fatores que serão explicados mais detalhadamente abaixo.
-			
-		</p>
-
-	</div>
-	<!-- div do centro (canvas) -->
-	<div id="center"><canvas id="cnv" width="400" height="600" style="border:1px solid black"></canvas>
-
-	</div>
-
-</div>
-
-<div>
-	
-	<h2>Tabela</h2>
-
-	<p>Abaixo é apresentada uma tabela com os valores de cada grandeza de acordo com o comprimento do primeiro pêndulo escolhido:</p>
-
-	<div id="tabela" align="center"></div>
-
-	<h2>Informações</h2>
-
-	<p>Como podemos construir o pêndulo de ondas? A resposta pode ser encontrada na tabela!</p>
-
-	<p>Perceba que a coluna <i>"número de oscilações"</i> nos mostra quantas oscilações cada pêndulo faz em um determinado tempo de referência que pode ser escolhido nos controles (por exemplo, 60 segundos). Este é o segredo para a construção do sistema: se o pêndulo mais longo oscilar <i>J</i> vezes em um certo tempo <i>T</i>, o pêndulo seguinte deverá executar <i>J+1</i> oscilações no mesmo intervalo de tempo <i>T</i>, e assim por diante. Dessa forma, todos os pêndulos são encurtados a partir do comprimento escolhido para o pêndulo mais longo.</p>
-
-	<p>Algo interessante para se notar é que a maneira como o sistema é construído cria um arranjo pendular em que após o tempo <i>T</i> ter passado, todos os pêndulos estarão <b>em fase</b> novamente! Por exemplo, se o tempo <i>T</i> for de 60 segundos, em 0 segundos o sistema é solto, em 30 segundos os pêndulos estão em <b>fase oposta</b> e em 60 segundos o movimento se repete.</p>
-
-	<p>A maior parte destas informações foram retiradas desse <a href="http://sbfisica.org.br/rbef/pdf/364309.pdf">artigo</a> muito interessante que apresenta também um estudo mais aprofundado sobre o pêndulo de ondas.</p>
-
-	<p><i>Feito por Adolfo Scheidt</i></p>
-	<p><i>Professor: Nelson Canzian da Silva</i></p>
-
-</div>
-
-<!-- script do programa -->
-<script>
-
-	// Captura do canvas
-	var cnv = document.getElementById('cnv')
-	var ctx = cnv.getContext("2d");
-
-	// Transformação de coordenadas do canvas
-	var xmin = -0.2;
-	var xmax = 0.2;
-	var ymin = 0;
-	var ymax = 0.55;
-	var cW = cnv.width;
-	var cH = cnv.height;
-	ctx.setTransform(cW/(xmax-xmin),0,0,-cH/(ymax-ymin),200,cH);
-	ctx.lineWidth = 1/500;
-	
-	// Função que atualiza os parâmetros escolhidos por quem estará utilizando o programa 
-	function updateData() { 
-
-	// VARIÁVEIS PRÉ-DEFINIDAS //
-
-		numPend = parseInt(document.getElementById("numPendTxt").value); //define o numero de pendulos
-		if (numPend>15 || numPend<0) {
-			alert("O número de pêndulos tem que estar entre 0 e 15!");
-			document.getElementById("numPendTxt").value = 15;
-			numPend = 15;
-		}
-
-		g = 9.8; // Aceleração da gravidade (m/s²)
-
-		L0 = parseFloat(document.getElementById("initLength").value); // Comprimento do pêndulo mais longo
-		if (L0>0.5 || L0<=0) {
-			alert("O comprimento do pêndulo deve ser maior que 0 e  menor ou igual a 0.5!");
-			document.getElementById("initLength").value = 0.5;
-			L0 = 0.5;
-		}	
-
-		T0 = 2*Math.PI  *Math.sqrt(L0/g); // Período do pêndulo mais longo
-		
-		timeRef = parseFloat(document.getElementById("txtTimeRef").value);    //tempo de referencia
-		if (timeRef<0) {
-			alert("O tempo de referência precisa ser maior que zero!");
-			document.getElementById("txtTimeRef").value = 60;
-			timeRef = 60;
-		}	
-		
-		t0 = 0;
-
-		thetaInDeg = document.getElementById("angulo").value; // Valor do ângulo inicial em graus (corresponde ao ângulo feito pelo fio com a vertical). Para manter a oscilação harmônica, considerar valores inferiores a 20°;
-		document.getElementById("anguloValor").innerHTML = thetaInDeg; // Atualiza o valor escolhido pelo usuário e substitui
-
-		thetaIn = thetaInDeg * Math.PI/180; // Ângulo inicial em radianos
-
-		// VARIÁVEIS DO PROGRAMA //
-
-		numOsc0 = timeRef / T0; // Número de oscilações do pêndulo mais longo (com base no tempo de referência)
-
-		numOsc = []; // Inicia a matriz com o número de oscilações de cada pêndulo
-
-		T = [T0]; // Inicia a matriz com os períodos de cada pêndulo
-		
-		L = []; // Inicia a matriz com os comprimentos de cada pêndulo
-
-		omega = []; // Inicia a matriz com os valores de omega (frequência angular) de cada pêndulo
-
-		amplitudeMax = []; // Inicia a matriz com o deslocamento máximo horizontal de cada pêndulo (depende diretamente do ângulo inicial)
-
-		x = []; // Inicia a Matriz com as posições em função do tempo para cada pêndulo
-
-		y = []; // Inicia a Matriz com as posições em y de cada pêndulo (ao longo do canvas).
-	
-			// Comando para definir as grandezas (período, frequencia angular, etc) respectivos de cada pêndulo
-		for (var i=0;i<numPend;i++) {
-			
-			y[i] = 0.02 + i/27;		// Monta a matriz com a posição em y de cada pêndulo (DEFINIDO POR NÓS!)				
-			numOsc[i] = numOsc0 + i;	// Monta a matriz com os números de oscilações (com base no pêndulo mais longo)
-			
-			T[i] = timeRef / numOsc[i];		// Monta a matriz com os períodos
-			
-			L[i] = g * Math.pow( (T[i]/(2*Math.PI)), 2); // Monta a matriz com os comprimentos de cada pêndulo
-			
-			amplitudeMax[i] = L[i] * Math.sin(thetaIn);	// Monta a matriz com as amplitudes máximas de cada pêndulo
-			
-			omega[i] = Math.sqrt(g/L[i]);	// Monta a matriz com a frequência angular de cada pêndulo
-		}
-
-		var str = "";
-		str += '<table id="myTable" border="2" cellpadding="5" cellspacing="">';
-		str += "<tr style='background-color:lightgrey'>";
-		str += '<th>Pêndulo</th>';
-		str += '<th>Comprimento do fio</th>';
-		str += '<th>Período</th>';
-		str += '<th>Numero de Oscilações (de acordo com o tempo de referência)</th>';
-		str += '</tr>';
-		for (var i=0;i<numPend;i++) {
-			str += "<tr>";
-			str += "<td align='center';>" + (i+1) + "</td>";
-			str += "<td align='center';>" + L[i].toPrecision(3) + "&nbsp; m" + "</td>";
-			str += "<td align='center';>" + T[i].toPrecision(4) + "&nbsp; s" + "</td>";
-			str += "<td align='center';>" + numOsc[i].toPrecision(5) + "</td>";
-			str += "</tr>";
-
-		}
-		str += '</table>';
-		document.getElementById('tabela').innerHTML = str;
-	}
-	// Para executar a função já no início do programa:
-	updateData();
-
-	// Função que mostra a imagem antes de os pêndulos serem liberados
-	function staticImg(t) {
-
-	ctx.clearRect(-0.2,0,0.4,0.55); // Limpa o canvas para que os pêndulos não fiquem sobrepostos ao longo do tempo
-		
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.lineTo(0,ymax);
-		ctx.strokeStyle = "brown"
-		ctx.stroke();
-
-		for (var i=0;i<numPend;i++) {
-
-			// Define a posição x de cada pêndulo em função do tempo
-			x[i] = amplitudeMax[i] * Math.cos( omega[i] * t/1000 );
-
-			// Constrói as bolinhas com as respectivas coordenadas x e y
-			ctx.beginPath();
-			ctx.arc(x[i],y[i],0.006,0,Math.PI*2,0);
-			ctx.fill();
-
-			// Constrói as linhas que serão o fio dos pêndulos "vistos de cima"
-			ctx.beginPath();
-			ctx.moveTo(0,y[i]);
-			ctx.lineTo(x[i],y[i]);
-			ctx.strokeStyle = "red";
-			ctx.stroke();
-
-		}
-
-	} 
-	// Inicializa a função junto com o programa
-	staticImg(0);
-
-	// Função que movimenta o pêndulo
-	function animate() {
-		
-		// função que ajusta o tempo de acordo com o tempo real (em milissegundos!)
-		var agora = new Date();
-		t = t0 + (agora.getTime() - inicio.getTime());
-
-		staticImg(t);
-
-		document.getElementById("clock").innerHTML = (t/1000).toPrecision(4); // Atualiza o tempo do cronômetro
-		
-	}
-	
-	// Função que "solta os pêndulos"
-	function activate() {	
-		hora = document.getElementById("clock").innerHTML;
-		if (hora==0.000 || hora==pausa){
-		inicio = new Date();
-		tictac = setInterval("animate()",50);
-		}
-	}
-
-	// Função que para os pêndulos
-	function desactivate() {
-		pausa = document.getElementById("clock").innerHTML;
-		if (pausa!=0.000){
-		clearInterval(tictac);
-		t0 = t;
-		}
-	}
-
-	//Função que reseta os pêndulos
-	function reset() {
-		clearInterval(tictac);
-		t0 = 0;
-		document.getElementById("clock").innerHTML = "0.000"
-	}
-
-</script>
-
-</body>
-
+  <head>
+    <title>Pêndulo de Ondas</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body id="myBody">
+    <!-- CSS para ajustar os divs do layout da página -->
+    <style type="text/css">
+      #container {
+        width: 100%;
+      }
+      #right {
+        float: right;
+        width: 400px;
+      }
+      #left {
+        float: left;
+        width: 400px;
+      }
+      #center {
+        margin: 0 auto;
+        width: 400px;
+      }
+    </style>
+
+    <!-- div que abrange a tela inteira -->
+    <div id="container" style="clear: both">
+      <div id="right" style="height: 600px">
+        <!-- div da direita -->
+
+        <div style="position: relative; text-align: center">
+          <h2>Controles</h2>
+
+          <p>Valor do ângulo inicial (máximo 20 graus):</p>
+
+          0<input
+            type="range"
+            id="angulo"
+            value="20"
+            min="0"
+            max="20"
+            onInput="updateData(); staticImg(0)"
+          />20
+
+          <br />
+
+          <p>Ângulo: <span id="anguloValor">20</span>&deg;</p>
+
+          <p>
+            Valor do comprimento do pêndulo mais longo:
+
+            <input
+              type="text"
+              id="initLength"
+              style="width: 30px"
+              value="0.5"
+            />
+            m
+
+            <br />
+
+            (Máximo: 0.5 metros) &nbsp;
+
+            <input
+              type="button"
+              value="OK"
+              id="lengthBtn"
+              onclick="updateData(); staticImg(0)"
+            />
+          </p>
+
+          <p>
+            Escolha o número de pêndulos:
+
+            <input type="text" id="numPendTxt" style="width: 30px" value="15" />
+
+            <br />
+
+            (Máximo: 15) &nbsp;
+
+            <input
+              type="button"
+              value="OK"
+              onclick="updateData(); staticImg(0)"
+            />
+          </p>
+
+          <p>
+            Escolha aqui um tempo de referência:
+
+            <input type="text" id="txtTimeRef" style="width: 30px" value="60" />
+            s
+
+            <br />
+
+            (Valor mínimo: 0 s) &nbsp;
+
+            <input
+              type="button"
+              value="OK"
+              id="timeRefBtn"
+              onclick="updateData(); staticImg(0)"
+            />
+          </p>
+
+          <p>Cronômetro: <span id="clock">0.000</span> s</p>
+
+          <input
+            type="button"
+            value="Soltar os pêndulos!"
+            onclick="activate()"
+            style="background-color: lightblue"
+          />
+
+          <br />
+          <br />
+
+          <input
+            type="button"
+            value="Parar os pêndulos!"
+            onclick="desactivate()"
+            style="background-color: rgb(255, 150, 150)"
+          />
+
+          <br />
+          <br />
+
+          <input
+            type="button"
+            value="Reiniciar"
+            onclick="reset(); staticImg(0)"
+            style="background-color: rgb(250, 250, 0)"
+          />
+        </div>
+      </div>
+
+      <div id="left" style="height: 600px">
+        <!-- div da esquerda -->
+
+        <h1 style="position: relative; text-align: center">
+          <u>Pêndulo de Ondas</u>
+        </h1>
+
+        <p
+          style="
+            font-size: 20px;
+            position: relative;
+            left: 15px;
+            text-align: center;
+          "
+        >
+          O pêndulo de ondas consiste em um arranjo de pêndulos com pequenas
+          variações em seus comprimentos, fazendo com que eles "dancem" ao longo
+          do tempo de acordo com suas respectivas oscilações.
+
+          <br />
+          <br />
+
+          Uma visualização do fênomeno em vídeo está disponível
+          <a href="https://www.youtube.com/watch?v=yVkdfJ9PkRQ">aqui</a>. Este
+          programa retrata o mesmo sistema visto "de cima".
+
+          <br />
+          <br />
+          Nas configurações à direita, você pode controlar o número de pêndulos,
+          o comprimento do pêndulo mais longo e outros fatores que serão
+          explicados mais detalhadamente abaixo.
+        </p>
+      </div>
+      <!-- div do centro (canvas) -->
+      <div id="center">
+        <canvas
+          id="cnv"
+          width="400"
+          height="600"
+          style="border: 1px solid black"
+        ></canvas>
+      </div>
+    </div>
+
+    <div>
+      <h2>Tabela</h2>
+
+      <p>
+        Abaixo é apresentada uma tabela com os valores de cada grandeza de
+        acordo com o comprimento do primeiro pêndulo escolhido:
+      </p>
+
+      <div id="tabela" align="center"></div>
+
+      <h2>Informações</h2>
+
+      <p>
+        Como podemos construir o pêndulo de ondas? A resposta pode ser
+        encontrada na tabela!
+      </p>
+
+      <p>
+        Perceba que a coluna <i>"número de oscilações"</i> nos mostra quantas
+        oscilações cada pêndulo faz em um determinado tempo de referência que
+        pode ser escolhido nos controles (por exemplo, 60 segundos). Este é o
+        segredo para a construção do sistema: se o pêndulo mais longo oscilar
+        <i>J</i> vezes em um certo tempo <i>T</i>, o pêndulo seguinte deverá
+        executar <i>J+1</i> oscilações no mesmo intervalo de tempo <i>T</i>, e
+        assim por diante. Dessa forma, todos os pêndulos são encurtados a partir
+        do comprimento escolhido para o pêndulo mais longo.
+      </p>
+
+      <p>
+        Algo interessante para se notar é que a maneira como o sistema é
+        construído cria um arranjo pendular em que após o tempo <i>T</i> ter
+        passado, todos os pêndulos estarão <b>em fase</b> novamente! Por
+        exemplo, se o tempo <i>T</i> for de 60 segundos, em 0 segundos o sistema
+        é solto, em 30 segundos os pêndulos estão em <b>fase oposta</b> e em 60
+        segundos o movimento se repete.
+      </p>
+
+      <p>
+        A maior parte destas informações foram retiradas desse
+        <a href="http://sbfisica.org.br/rbef/pdf/364309.pdf">artigo</a> muito
+        interessante que apresenta também um estudo mais aprofundado sobre o
+        pêndulo de ondas.
+      </p>
+
+      <p><i>Feito por Adolfo Scheidt</i></p>
+      <p><i>Professor: Nelson Canzian da Silva</i></p>
+    </div>
+
+    <!-- script do programa -->
+    <script>
+      // Captura do canvas
+      var cnv = document.getElementById("cnv");
+      var ctx = cnv.getContext("2d");
+
+      // Transformação de coordenadas do canvas
+      var xmin = -0.2;
+      var xmax = 0.2;
+      var ymin = 0;
+      var ymax = 0.55;
+      var cW = cnv.width;
+      var cH = cnv.height;
+      ctx.setTransform(cW / (xmax - xmin), 0, 0, -cH / (ymax - ymin), 200, cH);
+      ctx.lineWidth = 1 / 500;
+
+      // Função que atualiza os parâmetros escolhidos por quem estará utilizando o programa
+      function updateData() {
+        // VARIÁVEIS PRÉ-DEFINIDAS //
+
+        numPend = parseInt(document.getElementById("numPendTxt").value); //define o numero de pendulos
+        if (numPend > 15 || numPend < 0) {
+          alert("O número de pêndulos tem que estar entre 0 e 15!");
+          document.getElementById("numPendTxt").value = 15;
+          numPend = 15;
+        }
+
+        g = 9.8; // Aceleração da gravidade (m/s²)
+
+        L0 = parseFloat(document.getElementById("initLength").value); // Comprimento do pêndulo mais longo
+        if (L0 > 0.5 || L0 <= 0) {
+          alert(
+            "O comprimento do pêndulo deve ser maior que 0 e  menor ou igual a 0.5!"
+          );
+          document.getElementById("initLength").value = 0.5;
+          L0 = 0.5;
+        }
+
+        T0 = 2 * Math.PI * Math.sqrt(L0 / g); // Período do pêndulo mais longo
+
+        timeRef = parseFloat(document.getElementById("txtTimeRef").value); //tempo de referencia
+        if (timeRef < 0) {
+          alert("O tempo de referência precisa ser maior que zero!");
+          document.getElementById("txtTimeRef").value = 60;
+          timeRef = 60;
+        }
+
+        t0 = 0;
+
+        thetaInDeg = document.getElementById("angulo").value; // Valor do ângulo inicial em graus (corresponde ao ângulo feito pelo fio com a vertical). Para manter a oscilação harmônica, considerar valores inferiores a 20°;
+        document.getElementById("anguloValor").innerHTML = thetaInDeg; // Atualiza o valor escolhido pelo usuário e substitui
+
+        thetaIn = (thetaInDeg * Math.PI) / 180; // Ângulo inicial em radianos
+
+        // VARIÁVEIS DO PROGRAMA //
+
+        numOsc0 = timeRef / T0; // Número de oscilações do pêndulo mais longo (com base no tempo de referência)
+
+        numOsc = []; // Inicia a matriz com o número de oscilações de cada pêndulo
+
+        T = [T0]; // Inicia a matriz com os períodos de cada pêndulo
+
+        L = []; // Inicia a matriz com os comprimentos de cada pêndulo
+
+        omega = []; // Inicia a matriz com os valores de omega (frequência angular) de cada pêndulo
+
+        amplitudeMax = []; // Inicia a matriz com o deslocamento máximo horizontal de cada pêndulo (depende diretamente do ângulo inicial)
+
+        x = []; // Inicia a Matriz com as posições em função do tempo para cada pêndulo
+
+        y = []; // Inicia a Matriz com as posições em y de cada pêndulo (ao longo do canvas).
+
+        // Comando para definir as grandezas (período, frequencia angular, etc) respectivos de cada pêndulo
+        for (var i = 0; i < numPend; i++) {
+          y[i] = 0.02 + i / 27; // Monta a matriz com a posição em y de cada pêndulo (DEFINIDO POR NÓS!)
+          numOsc[i] = numOsc0 + i; // Monta a matriz com os números de oscilações (com base no pêndulo mais longo)
+
+          T[i] = timeRef / numOsc[i]; // Monta a matriz com os períodos
+
+          L[i] = g * Math.pow(T[i] / (2 * Math.PI), 2); // Monta a matriz com os comprimentos de cada pêndulo
+
+          amplitudeMax[i] = L[i] * Math.sin(thetaIn); // Monta a matriz com as amplitudes máximas de cada pêndulo
+
+          omega[i] = Math.sqrt(g / L[i]); // Monta a matriz com a frequência angular de cada pêndulo
+        }
+
+        var str = "";
+        str += '<table id="myTable" border="2" cellpadding="5" cellspacing="">';
+        str += "<tr style='background-color:lightgrey'>";
+        str += "<th>Pêndulo</th>";
+        str += "<th>Comprimento do fio</th>";
+        str += "<th>Período</th>";
+        str +=
+          "<th>Numero de Oscilações (de acordo com o tempo de referência)</th>";
+        str += "</tr>";
+        for (var i = 0; i < numPend; i++) {
+          str += "<tr>";
+          str += "<td align='center';>" + (i + 1) + "</td>";
+          str +=
+            "<td align='center';>" + L[i].toPrecision(3) + "&nbsp; m" + "</td>";
+          str +=
+            "<td align='center';>" + T[i].toPrecision(4) + "&nbsp; s" + "</td>";
+          str += "<td align='center';>" + numOsc[i].toPrecision(5) + "</td>";
+          str += "</tr>";
+        }
+        str += "</table>";
+        document.getElementById("tabela").innerHTML = str;
+      }
+      // Para executar a função já no início do programa:
+      updateData();
+
+      // Função que mostra a imagem antes de os pêndulos serem liberados
+      function staticImg(t) {
+        ctx.clearRect(-0.2, 0, 0.4, 0.55); // Limpa o canvas para que os pêndulos não fiquem sobrepostos ao longo do tempo
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, ymax);
+        ctx.strokeStyle = "brown";
+        ctx.stroke();
+
+        for (var i = 0; i < numPend; i++) {
+          // Define a posição x de cada pêndulo em função do tempo
+          x[i] = amplitudeMax[i] * Math.cos((omega[i] * t) / 1000);
+
+          // Constrói as bolinhas com as respectivas coordenadas x e y
+          ctx.beginPath();
+          ctx.arc(x[i], y[i], 0.006, 0, Math.PI * 2, 0);
+          ctx.fill();
+
+          // Constrói as linhas que serão o fio dos pêndulos "vistos de cima"
+          ctx.beginPath();
+          ctx.moveTo(0, y[i]);
+          ctx.lineTo(x[i], y[i]);
+          ctx.strokeStyle = "red";
+          ctx.stroke();
+        }
+      }
+      // Inicializa a função junto com o programa
+      staticImg(0);
+
+      // Função que movimenta o pêndulo
+      function animate() {
+        // função que ajusta o tempo de acordo com o tempo real (em milissegundos!)
+        var agora = new Date();
+        t = t0 + (agora.getTime() - inicio.getTime());
+
+        staticImg(t);
+
+        document.getElementById("clock").innerHTML = (t / 1000).toPrecision(4); // Atualiza o tempo do cronômetro
+      }
+
+      // Função que "solta os pêndulos"
+      function activate() {
+        hora = document.getElementById("clock").innerHTML;
+        if (hora == 0.0 || hora == pausa) {
+          inicio = new Date();
+          tictac = setInterval("animate()", 50);
+        }
+      }
+
+      // Função que para os pêndulos
+      function desactivate() {
+        pausa = document.getElementById("clock").innerHTML;
+        if (pausa != 0.0) {
+          clearInterval(tictac);
+          t0 = t;
+        }
+      }
+
+      //Função que reseta os pêndulos
+      function reset() {
+        clearInterval(tictac);
+        t0 = 0;
+        document.getElementById("clock").innerHTML = "0.000";
+      }
+    </script>
+  </body>
 </html>
